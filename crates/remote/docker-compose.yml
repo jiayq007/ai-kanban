@@ -82,14 +82,13 @@ services:
         SENTRY_DSN_REMOTE: ${SENTRY_DSN_REMOTE:-}
         VITE_RELAY_API_BASE_URL: ${VITE_RELAY_API_BASE_URL:-http://localhost:8082}
         VITE_PUBLIC_REACT_VIRTUOSO_LICENSE_KEY: ${VITE_PUBLIC_REACT_VIRTUOSO_LICENSE_KEY:-}
-      ssh:
-        - default
+        http_proxy: ${http_proxy:-}
+        https_proxy: ${https_proxy:-}
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
     depends_on:
       remote-db:
         condition: service_healthy
-      azurite-init:
-        condition: service_completed_successfully
-        required: false
     environment:
       RUST_LOG: info,remote=info
 

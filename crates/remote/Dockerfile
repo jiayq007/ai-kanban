@@ -14,7 +14,10 @@ ENV VITE_PUBLIC_REACT_VIRTUOSO_LICENSE_KEY=${VITE_PUBLIC_REACT_VIRTUOSO_LICENSE_
 
 RUN corepack enable
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+# Force pnpm to use mirror (npmjs.org blocked from Docker)
+ENV npm_config_registry=https://registry.npmmirror.com
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
 COPY packages/local-web/package.json packages/local-web/package.json
 COPY packages/remote-web/package.json packages/remote-web/package.json
 COPY packages/ui/package.json packages/ui/package.json
@@ -22,7 +25,7 @@ COPY packages/web-core/package.json packages/web-core/package.json
 COPY patches/ patches/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+    pnpm install --registry https://registry.npmmirror.com --no-frozen-lockfile
 
 COPY packages/remote-web/ packages/remote-web/
 COPY packages/local-web/tailwind.new.config.js packages/local-web/tailwind.new.config.js
@@ -39,16 +42,23 @@ ARG FEATURES
 ARG POSTHOG_API_KEY=""
 ARG POSTHOG_API_ENDPOINT=""
 ARG SENTRY_DSN_REMOTE=""
+ARG http_proxy=""
+ARG https_proxy=""
+ARG HTTP_PROXY=""
+ARG HTTPS_PROXY=""
 
 ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 ENV CARGO_TARGET_DIR=/app/target
+ENV http_proxy=http://host.docker.internal:7897
+ENV https_proxy=http://host.docker.internal:7897
 ENV POSTHOG_API_KEY=${POSTHOG_API_KEY}
 ENV POSTHOG_API_ENDPOINT=${POSTHOG_API_ENDPOINT}
 ENV SENTRY_DSN_REMOTE=${SENTRY_DSN_REMOTE}
 
-# Install build dependencies, plus git and openssh-client for private repo access
-RUN apt-get update \
+# Use Aliyun mirror for Debian (deb.debian.org blocked)
+RUN sed -i 's|http://deb.debian.org/debian|http://mirrors.aliyun.com/debian|g' /etc/apt/sources.list.d/debian.sources \
+  && apt-get update \
   && apt-get install -y --no-install-recommends pkg-config libssl-dev ca-certificates git openssh-client \
   && mkdir -p -m 0700 /root/.ssh \
   && ssh-keyscan github.com >> /root/.ssh/known_hosts \
@@ -60,8 +70,6 @@ WORKDIR /app
 COPY rust-toolchain.toml ./
 RUN cargo --version >/dev/null
 COPY Cargo.toml Cargo.lock ./
-# Copy workspace member manifests so Cargo can resolve workspace-shared deps
-# without invalidating the build on every unrelated source change.
 COPY crates/server/Cargo.toml crates/server/Cargo.toml
 COPY crates/trusted-key-auth/Cargo.toml crates/trusted-key-auth/Cargo.toml
 COPY crates/mcp/Cargo.toml crates/mcp/Cargo.toml
@@ -85,9 +93,6 @@ COPY assets assets
 
 RUN mkdir -p /app/bin
 
-# When building without FEATURES (self-hosted), strip the private billing dependency
-# and its feature flag from Cargo.toml so cargo doesn't try to fetch the private git repo.
-# Also remove the Cargo.lock which references the private repo.
 RUN if [ -z "${FEATURES}" ]; then \
       sed -i '/^billing = {.*vibe-kanban-private.*/d' crates/remote/Cargo.toml; \
       sed -i '/^# private crate for billing/d' crates/remote/Cargo.toml; \
@@ -98,14 +103,18 @@ RUN if [ -z "${FEATURES}" ]; then \
 RUN --mount=type=cache,id=cargo-registry,target=/usr/local/cargo/registry \
     --mount=type=cache,id=cargo-git,target=/usr/local/cargo/git \
     --mount=type=cache,id=remote-target,target=/app/target \
-    --mount=type=ssh \
     cargo build ${FEATURES:+--locked} --release --manifest-path crates/remote/Cargo.toml ${FEATURES:+--features ${FEATURES}} \
  && cp /app/target/release/${APP_NAME} /app/bin/${APP_NAME}
 
 FROM debian:bookworm-slim AS runtime
 ARG APP_NAME
+ARG http_proxy=""
+ARG https_proxy=""
+ARG HTTP_PROXY=""
+ARG HTTPS_PROXY=""
 
-RUN apt-get update \
+RUN sed -i 's|http://deb.debian.org/debian|http://mirrors.aliyun.com/debian|g' /etc/apt/sources.list.d/debian.sources \
+  && apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates libssl3 wget git \
   && rm -rf /var/lib/apt/lists/* \
   && useradd --system --create-home --uid 10001 appuser
