@@ -8,7 +8,8 @@
   </a>
 </p>
 
-<p align="center">Get 10X more out of Claude Code, Gemini CLI, Codex, Amp and other coding agents...</p>
+<p align="center">让 Claude Code、Gemini CLI、Codex、Amp 等编程智能体的效率提升 10 倍</p>
+
 <p align="center">
   <a href="https://www.npmjs.com/package/vibe-kanban"><img alt="npm" src="https://img.shields.io/npm/v/vibe-kanban?style=flat-square" /></a>
   <a href="https://github.com/BloopAI/vibe-kanban/blob/main/.github/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/BloopAI/vibe-kanban/.github%2Fworkflows%2Fpublish.yml" /></a>
@@ -16,147 +17,150 @@
 </p>
 
 <h1 align="center">
-  <a href="https://jobs.polymer.co/vibe-kanban?source=github"><strong>We're hiring!</strong></a>
+  <a href="https://jobs.polymer.co/vibe-kanban?source=github"><strong>我们正在招聘！</strong></a>
 </h1>
 
 ![](packages/public/vibe-kanban-screenshot-overview.png)
 
-## Overview
+## 概述
 
-In a world where software engineers spend most of their time planning and reviewing coding agents, the most impactful way to ship more is to get faster at planning and review.
+在软件工程师大部分时间都在规划和审查编程智能体的时代，提升规划和审查效率是提高交付速度最有效的方式。
 
-Vibe Kanban is built for this. Use kanban issues to plan work, either privately or with your team. When you're ready to begin, create workspaces where coding agents can execute.
+Vibe Kanban 为此而生。使用看板 Issue 来规划工作，可以私有使用，也可以团队协作。准备开始时，创建工作区让编程智能体来执行。
 
-- **Plan with kanban issues** — create, prioritise, and assign issues on a kanban board
-- **Run coding agents in workspaces** — each workspace gives an agent a branch, a terminal, and a dev server
-- **Review diffs and leave inline comments** — send feedback directly to the agent without leaving the UI
-- **Preview your app** — built-in browser with devtools, inspect mode, and device emulation
-- **Switch between 10+ coding agents** — Claude Code, Codex, Gemini CLI, GitHub Copilot, Amp, Cursor, OpenCode, Droid, CCR, and Qwen Code
-- **Create pull requests and merge** — open PRs with AI-generated descriptions, review on GitHub, and merge
+- **看板规划** — 在看板上创建、排序、分配 Issue
+- **在工作区中运行编程智能体** — 每个工作区为智能体提供独立分支、终端和开发服务器
+- **审查 diff 并添加行内评论** — 无需离开界面即可向智能体发送反馈
+- **预览你的应用** — 内置浏览器，支持开发者工具、审查模式和设备模拟
+- **切换 10+ 编程智能体** — Claude Code、Codex、Gemini CLI、GitHub Copilot、Amp、Cursor、OpenCode、Droid、CCR 和 Qwen Code
+- **创建 PR 并合并** — 使用 AI 生成的描述创建 PR，在 GitHub 上审查并合并
 
 ![](packages/public/vibe-kanban-screenshot-workspace.png)
 
-One command. Describe the work, review the diff, ship it.
+一行命令：描述工作、审查 diff、发布上线。
 
 ```bash
 npx vibe-kanban
 ```
 
+## 安装
 
-## Installation
-
-Make sure you have authenticated with your favourite coding agent. A full list of supported coding agents can be found in the [docs](https://vibekanban.com/docs/supported-coding-agents). Then in your terminal run:
+确保你已登录你喜欢的编程智能体。完整支持的智能体列表见[文档](https://vibekanban.com/docs/supported-coding-agents)。然后在终端运行：
 
 ```bash
 npx vibe-kanban
 ```
 
-## Documentation
+## 文档
 
-Head to the [website](https://vibekanban.com/docs) for the latest documentation and user guides.
+最新文档和用户指南请访问[官网](https://vibekanban.com/docs)。
 
-## Self-Hosting
+## 自托管
 
-Want to host your own Vibe Kanban Cloud instance? See our [self-hosting guide](https://vibekanban.com/docs/self-hosting/deploy-docker).
+想自己托管 Vibe Kanban Cloud 实例？查看我们的[自托管指南](https://vibekanban.com/docs/self-hosting/deploy-docker)。
 
-## Support
+## 支持
 
-We use [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) for feature requests. Please open a discussion to create a feature request. For bugs please open an issue on this repo.
+我们使用 [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) 来收集功能请求。请创建 Discussion 来提交功能请求。Bug 请在本仓库创建 Issue。
 
-## Contributing
+## 贡献
 
-We would prefer that ideas and changes are first raised with the core team via [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) or [Discord](https://discord.gg/AC4nwVtJM3), where we can discuss implementation details and alignment with the existing roadmap. Please do not open PRs without first discussing your proposal with the team.
+我们希望所有想法和变更首先通过 [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) 或 [Discord](https://discord.gg/AC4nwVtJM3) 与核心团队沟通，讨论实现细节以及与现有路线图的一致性。请勿在未与团队讨论方案之前直接提交 PR。
 
-## Development
+## 开发
 
-### Prerequisites
+### 前置条件
 
-- [Rust](https://rustup.rs/) (latest stable)
-- [Node.js](https://nodejs.org/) (>=20)
-- [pnpm](https://pnpm.io/) (>=8)
+- [Rust](https://rustup.rs/)（最新 stable 版）
+- [Node.js](https://nodejs.org/)（>=20）
+- [pnpm](https://pnpm.io/)（>=8）
 
-Additional development tools:
+额外开发工具：
 ```bash
 cargo install cargo-watch
 cargo install sqlx-cli
 ```
 
-Install dependencies:
+安装依赖：
 ```bash
 pnpm i
 ```
 
-### Running the dev server
+### 启动开发服务器
 
 ```bash
 pnpm run dev
 ```
 
-This will start the backend and web app. A blank DB will be copied from the `dev_assets_seed` folder.
+这会启动后端和 Web 应用。空白数据库将从 `dev_assets_seed` 文件夹复制。
 
-### Building the web app
+### 构建 Web 应用
 
-To build just the web app:
+只构建 Web 前端：
 
 ```bash
 cd packages/local-web
 pnpm run build
 ```
 
-### Build from source (macOS)
+### 从源码构建（macOS）
 
-1. Run `./local-build.sh`
-2. Test with `cd npx-cli && node bin/cli.js`
+1. 运行 `./local-build.sh`
+2. 测试：`cd npx-cli && node bin/cli.js`
 
-### Environment Variables
+### 环境变量
 
-The following environment variables can be configured at build time or runtime:
+以下环境变量可在构建时或运行时配置：
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `POSTHOG_API_KEY` | Build-time | Empty | PostHog analytics API key (disables analytics if empty) |
-| `POSTHOG_API_ENDPOINT` | Build-time | Empty | PostHog analytics endpoint (disables analytics if empty) |
-| `PORT` | Runtime | Auto-assign | **Production**: Server port. **Dev**: Frontend port (backend uses PORT+1) |
-| `BACKEND_PORT` | Runtime | `0` (auto-assign) | Backend server port (dev mode only, overrides PORT+1) |
-| `FRONTEND_PORT` | Runtime | `3000` | Frontend dev server port (dev mode only, overrides PORT) |
-| `HOST` | Runtime | `127.0.0.1` | Backend server host |
-| `MCP_HOST` | Runtime | Value of `HOST` | MCP server connection host (use `127.0.0.1` when `HOST=0.0.0.0` on Windows) |
-| `MCP_PORT` | Runtime | Value of `BACKEND_PORT` | MCP server connection port |
-| `DISABLE_WORKTREE_CLEANUP` | Runtime | Not set | Disable all git worktree cleanup including orphan and expired workspace cleanup (for debugging) |
-| `VK_ALLOWED_ORIGINS` | Runtime | Not set | Comma-separated list of origins that are allowed to make backend API requests (e.g., `https://my-vibekanban-frontend.com`) |
-| `VK_SHARED_API_BASE` | Runtime | Not set | Base URL for the remote/cloud API used by the local desktop app |
-| `VK_SHARED_RELAY_API_BASE` | Runtime | Not set | Base URL for the relay API used by tunnel-mode connections |
-| `VK_TUNNEL` | Runtime | Not set | Enable relay tunnel mode when set (requires relay API base URL) |
+| 变量 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `POSTHOG_API_KEY` | 构建时 | 空 | PostHog 分析 API Key（为空则禁用分析） |
+| `POSTHOG_API_ENDPOINT` | 构建时 | 空 | PostHog 分析端点（为空则禁用分析） |
+| `PORT` | 运行时 | 自动分配 | **生产模式**：服务器端口。**开发模式**：前端端口（后端使用 PORT+1） |
+| `BACKEND_PORT` | 运行时 | `0`（自动分配） | 后端服务器端口（仅开发模式，覆盖 PORT+1） |
+| `FRONTEND_PORT` | 运行时 | `3000` | 前端开发服务器端口（仅开发模式，覆盖 PORT） |
+| `HOST` | 运行时 | `127.0.0.1` | 后端服务器主机地址 |
+| `MCP_HOST` | 运行时 | 取 `HOST` 的值 | MCP 服务器连接主机（Windows 上 `HOST=0.0.0.0` 时使用 `127.0.0.1`） |
+| `MCP_PORT` | 运行时 | 取 `BACKEND_PORT` 的值 | MCP 服务器连接端口 |
+| `DISABLE_WORKTREE_CLEANUP` | 运行时 | 未设置 | 禁用所有 git worktree 清理（用于调试） |
+| `VK_ALLOWED_ORIGINS` | 运行时 | 未设置 | 允许访问后端 API 的来源列表，逗号分隔（如 `https://my-vibekanban-frontend.com`） |
+| `VK_SHARED_API_BASE` | 运行时 | 未设置 | 本地桌面 App 连接的远程/云端 API 地址 |
+| `VK_SHARED_RELAY_API_BASE` | 运行时 | 未设置 | 中继 API 地址，用于隧道模式连接 |
+| `VK_TUNNEL` | 运行时 | 未设置 | 设置后启用中继隧道模式（需要中继 API 地址） |
 
-**Build-time variables** must be set when running `pnpm run build`. **Runtime variables** are read when the application starts.
+**构建时变量**必须在运行 `pnpm run build` 时设置。**运行时变量**在应用启动时读取。
 
-#### Self-Hosting with a Reverse Proxy or Custom Domain
+#### 使用反向代理或自定义域名的自托管
 
-When running Vibe Kanban behind a reverse proxy (e.g., nginx, Caddy, Traefik) or on a custom domain, you must set the `VK_ALLOWED_ORIGINS` environment variable. Without this, the browser's Origin header won't match the backend's expected host, and API requests will be rejected with a 403 Forbidden error.
+在反向代理（如 nginx、Caddy、Traefik）或自定义域名后运行 Vibe Kanban 时，必须设置 `VK_ALLOWED_ORIGINS` 环境变量。否则浏览器的 Origin 头部与后端预期的主机不匹配，API 请求将被拒绝并返回 403。
 
-Set it to the full origin URL(s) where your frontend is accessible:
+将其设置为前端可访问的完整源 URL：
 
 ```bash
-# Single origin
+# 单个来源
 VK_ALLOWED_ORIGINS=https://vk.example.com
 
-# Multiple origins (comma-separated)
+# 多个来源（逗号分隔）
 VK_ALLOWED_ORIGINS=https://vk.example.com,https://vk-staging.example.com
 ```
 
-### Remote Deployment
+### 远程部署
 
-When running Vibe Kanban on a remote server (e.g., via systemctl, Docker, or cloud hosting), you can configure your editor to open projects via SSH:
+在远程服务器上运行 Vibe Kanban（如通过 systemctl、Docker 或云托管）时，可以配置编辑器通过 SSH 打开项目：
 
-1. **Access via tunnel**: Use Cloudflare Tunnel, ngrok, or similar to expose the web UI
-2. **Configure remote SSH** in Settings → Editor Integration:
-   - Set **Remote SSH Host** to your server hostname or IP
-   - Set **Remote SSH User** to your SSH username (optional)
-3. **Prerequisites**:
-   - SSH access from your local machine to the remote server
-   - SSH keys configured (passwordless authentication)
-   - VSCode Remote-SSH extension
+1. **通过隧道访问**：使用 Cloudflare Tunnel、ngrok 等工具暴露 Web UI
+2. **在 设置 → 编辑器集成 中配置远程 SSH**：
+   - 将 **Remote SSH Host** 设置为服务器主机名或 IP 地址
+   - 将 **Remote SSH User** 设置为 SSH 用户名（可选）
+3. **前置条件**：
+   - 本地机器到远程服务器之间有 SSH 访问权限
+   - 已配置 SSH 密钥（免密认证）
+   - 安装 VSCode Remote-SSH 扩展
 
-When configured, the "Open in VSCode" buttons will generate URLs like `vscode://vscode-remote/ssh-remote+user@host/path` that open your local editor and connect to the remote server.
+配置完成后，"在 VSCode 中打开"按钮将生成类似 `vscode://vscode-remote/ssh-remote+user@host/path` 的 URL，用于打开本地编辑器并连接到远程服务器。
 
-See the [documentation](https://vibekanban.com/docs/settings/general) for detailed setup instructions.
+详细设置说明请参阅[文档](https://vibekanban.com/docs/settings/general)。
+
+## 国内部署
+
+如需在国内网络环境下部署完整功能（含项目管理和看板），请参阅 [部署须知](./docs/部署须知.md)。
