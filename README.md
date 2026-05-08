@@ -8,17 +8,10 @@
   </a>
 </p>
 
-<p align="center">让 Claude Code、Gemini CLI、Codex、Amp 等编程智能体的效率提升 10 倍</p>
+<p align="center">原本团队没有继续维护了，我自己FORK一个自己改着用！</p>
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/vibe-kanban"><img alt="npm" src="https://img.shields.io/npm/v/vibe-kanban?style=flat-square" /></a>
-  <a href="https://github.com/BloopAI/vibe-kanban/blob/main/.github/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/BloopAI/vibe-kanban/.github%2Fworkflows%2Fpublish.yml" /></a>
-  <a href="https://deepwiki.com/BloopAI/vibe-kanban"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-</p>
-
-<h1 align="center">
-  <a href="https://jobs.polymer.co/vibe-kanban?source=github"><strong>我们正在招聘！</strong></a>
-</h1>
+ 
+ 
 
 ![](packages/public/vibe-kanban-screenshot-overview.png)
 
@@ -38,35 +31,7 @@ Vibe Kanban 为此而生。使用看板 Issue 来规划工作，可以私有使�
 ![](packages/public/vibe-kanban-screenshot-workspace.png)
 
 一行命令：描述工作、审查 diff、发布上线。
-
-```bash
-npx vibe-kanban
-```
-
-## 安装
-
-确保你已登录你喜欢的编程智能体。完整支持的智能体列表见[文档](https://vibekanban.com/docs/supported-coding-agents)。然后在终端运行：
-
-```bash
-npx vibe-kanban
-```
-
-## 文档
-
-最新文档和用户指南请访问[官网](https://vibekanban.com/docs)。
-
-## 自托管
-
-想自己托管 Vibe Kanban Cloud 实例？查看我们的[自托管指南](https://vibekanban.com/docs/self-hosting/deploy-docker)。
-
-## 支持
-
-我们使用 [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) 来收集功能请求。请创建 Discussion 来提交功能请求。Bug 请在本仓库创建 Issue。
-
-## 贡献
-
-我们希望所有想法和变更首先通过 [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) 或 [Discord](https://discord.gg/AC4nwVtJM3) 与核心团队沟通，讨论实现细节以及与现有路线图的一致性。请勿在未与团队讨论方案之前直接提交 PR。
-
+  
 ## 开发
 
 ### 前置条件
@@ -144,6 +109,12 @@ VK_ALLOWED_ORIGINS=https://vk.example.com
 VK_ALLOWED_ORIGINS=https://vk.example.com,https://vk-staging.example.com
 ```
 
+
+## 部署
+
+如需在国内网络环境下部署完整功能（含项目管理和看板），请参阅 [部署须知](./docs/部署须知.md)。
+
+
 ### 远程部署
 
 在远程服务器上运行 Vibe Kanban（如通过 systemctl、Docker 或云托管）时，可以配置编辑器通过 SSH 打开项目：
@@ -160,7 +131,3 @@ VK_ALLOWED_ORIGINS=https://vk.example.com,https://vk-staging.example.com
 配置完成后，"在 VSCode 中打开"按钮将生成类似 `vscode://vscode-remote/ssh-remote+user@host/path` 的 URL，用于打开本地编辑器并连接到远程服务器。
 
 详细设置说明请参阅[文档](https://vibekanban.com/docs/settings/general)。
-
-## 国内部署
-
-如需在国内网络环境下部署完整功能（含项目管理和看板），请参阅 [部署须知](./docs/部署须知.md)。
