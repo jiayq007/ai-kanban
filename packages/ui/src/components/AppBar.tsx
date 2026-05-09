@@ -10,20 +10,12 @@ import {
   DownloadSimpleIcon,
   LinkIcon,
   PlusIcon,
-  KanbanIcon,
   SpinnerIcon,
   ChatsTeardrop as ChatsTeardropIcon,
   type Icon,
 } from '@phosphor-icons/react';
 import { cn } from '../lib/cn';
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverClose,
-} from './Popover';
 import { Tooltip } from './Tooltip';
-import { useTranslation } from 'react-i18next';
 
 function getProjectInitials(name: string): string {
   const trimmed = name.trim();
@@ -54,7 +46,6 @@ interface AppBarProps {
   activeProjectId?: string | null;
   isSignedIn?: boolean;
   isLoadingProjects?: boolean;
-  onSignIn?: () => void;
   onHoverStart?: () => void;
   onHoverEnd?: () => void;
   notificationBell?: ReactNode;
@@ -130,12 +121,6 @@ type AppBarSectionItem =
     }
   | {
       key: string;
-      kind: 'kanban-cta';
-      label: string;
-      onSignIn?: () => void;
-    }
-  | {
-      key: string;
       kind: 'loading';
     }
   | {
@@ -204,7 +189,6 @@ export function AppBar({
   activeProjectId = null,
   isSignedIn,
   isLoadingProjects,
-  onSignIn,
   onHoverStart,
   onHoverEnd,
   notificationBell,
@@ -215,7 +199,6 @@ export function AppBar({
   isAgentPanelOpen = false,
   onToggleAgentPanel,
 }: AppBarProps) {
-  const { t } = useTranslation('common');
   const sections: AppBarSection[] = [];
 
   if (showWorkspacesButton) {
@@ -271,15 +254,6 @@ export function AppBar({
   }
 
   const projectSectionItems: AppBarSectionItem[] = [];
-
-  if (!isSignedIn) {
-    projectSectionItems.push({
-      key: 'kanban-cta',
-      kind: 'kanban-cta',
-      label: t('appBar.kanban.tooltip'),
-      onSignIn,
-    });
-  }
 
   if (isLoadingProjects) {
     projectSectionItems.push({ key: 'projects-loading', kind: 'loading' });
@@ -385,44 +359,6 @@ export function AppBar({
           </Tooltip>
         );
       }
-      case 'kanban-cta':
-        return (
-          <Popover>
-            <Tooltip content={item.label} side="right">
-              <PopoverTrigger asChild>
-                <button
-                  type="button"
-                  className={getStandardAppBarButtonClassName({})}
-                  aria-label={item.label}
-                >
-                  <KanbanIcon className="size-icon-base" weight="bold" />
-                </button>
-              </PopoverTrigger>
-            </Tooltip>
-            <PopoverContent side="right" sideOffset={8}>
-              <p className="text-sm font-medium text-high">
-                {t('appBar.kanban.title')}
-              </p>
-              <p className="text-xs text-low mt-1">
-                {t('appBar.kanban.description')}
-              </p>
-              <div className="mt-base">
-                <PopoverClose asChild>
-                  <button
-                    type="button"
-                    onClick={item.onSignIn}
-                    className={cn(
-                      'px-base py-1 rounded-sm text-xs',
-                      'bg-brand text-on-brand hover:bg-brand-hover cursor-pointer'
-                    )}
-                  >
-                    {t('signIn')}
-                  </button>
-                </PopoverClose>
-              </div>
-            </PopoverContent>
-          </Popover>
-        );
       case 'loading':
         return (
           <div className="flex items-center justify-center w-10 h-10">
