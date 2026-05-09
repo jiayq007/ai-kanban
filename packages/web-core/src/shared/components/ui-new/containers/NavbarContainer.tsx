@@ -6,12 +6,20 @@ import { useActions } from '@/shared/hooks/useActions';
 import { useSyncErrorContext } from '@/shared/hooks/useSyncErrorContext';
 import { useUserOrganizations } from '@/shared/hooks/useUserOrganizations';
 import { useOrganizationStore } from '@/shared/stores/useOrganizationStore';
+import { useAuth } from '@/shared/hooks/auth/useAuth';
 import {
   Navbar,
   type NavbarSectionItem,
   type NavbarBreadcrumbItem,
   type MobileTabId,
 } from '@vibe/ui/components/Navbar';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@vibe/ui/components/Popover';
+import { cn } from '@/shared/lib/utils';
+import { CaretDownIcon } from '@phosphor-icons/react';
 import { useAllOrganizationProjects } from '@/shared/hooks/useAllOrganizationProjects';
 import { useShape } from '@/shared/integrations/electric/hooks';
 import { PROJECT_ISSUES_SHAPE } from 'shared/remote-types';
@@ -113,14 +121,26 @@ function toNavbarSectionItems(
   }, []);
 }
 
+export interface NavbarProject {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export function NavbarContainer({
   mobileMode = false,
   onOrgSelect,
   onOpenDrawer,
+  projects,
+  activeProjectId,
+  onProjectClick,
 }: {
   mobileMode?: boolean;
   onOrgSelect?: (orgId: string) => void;
   onOpenDrawer?: () => void;
+  projects?: NavbarProject[];
+  activeProjectId?: string | null;
+  onProjectClick?: (projectId: string) => void;
 }) {
   const { t } = useTranslation('common');
   const { executeAction } = useActions();
@@ -128,6 +148,7 @@ export function NavbarContainer({
   const { workspaces } = useUserContext();
   const syncErrorContext = useSyncErrorContext();
   const { remoteAuthDegraded } = useUserSystem();
+  const { isSignedIn } = useAuth();
   const appNavigation = useAppNavigation();
   const destination = useCurrentAppDestination();
   const projectDestination = useMemo(
@@ -307,6 +328,82 @@ export function NavbarContainer({
     );
   }, [mobileMode, orgsData?.organizations, selectedOrgId, onOrgSelect]);
 
+  // Active project name for the selector button
+  const activeProjectName = useMemo(() => {
+    if (!activeProjectId || !projects) return null;
+    return projects.find((p) => p.id === activeProjectId)?.name ?? null;
+  }, [activeProjectId, projects]);
+
+  // Build project selector slot for desktop navbar
+  const projectSelectorSlot = useMemo(() => {
+    if (mobileMode || !isSignedIn || !projects || projects.length === 0) {
+      return null;
+    }
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className={cn(
+              'flex items-center gap-1.5 px-2 py-1 rounded-sm text-sm',
+              'text-normal hover:bg-brand/10 cursor-pointer',
+              'max-w-[200px]'
+            )}
+          >
+            <span
+              className="h-2.5 w-2.5 rounded-full shrink-0"
+              style={{
+                backgroundColor: activeProjectId
+                  ? `hsl(${projects.find((p) => p.id === activeProjectId)?.color ?? 'var(--color-brand)'})`
+                  : 'var(--color-muted)',
+              }}
+            />
+            <span className="truncate">
+              {activeProjectName ?? 'Select project'}
+            </span>
+            <CaretDownIcon className="size-3 shrink-0 text-low" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start" sideOffset={8} className="w-56 p-1">
+          <div className="max-h-64 overflow-y-auto">
+            {projects.map((project) => (
+              <button
+                key={project.id}
+                type="button"
+                onClick={() => onProjectClick?.(project.id)}
+                className={cn(
+                  'flex items-center gap-2.5 w-full px-3 py-2 rounded-sm text-sm text-left cursor-pointer',
+                  'hover:bg-secondary',
+                  project.id === activeProjectId
+                    ? 'bg-brand/10 text-high'
+                    : 'text-normal'
+                )}
+              >
+                <span
+                  className="h-2.5 w-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: `hsl(${project.color})` }}
+                />
+                <span className="truncate">{project.name}</span>
+              </button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  }, [mobileMode, isSignedIn, projects, activeProjectId, activeProjectName, onProjectClick]);
+
+  // Build user slot for desktop navbar
+  const desktopUserSlot = useMemo(() => {
+    if (mobileMode) return undefined;
+    return (
+      <AppBarUserPopoverContainer
+        organizations={orgsData?.organizations ?? []}
+        selectedOrgId={selectedOrgId ?? ''}
+        onOrgSelect={onOrgSelect ?? (() => {})}
+      />
+    );
+  }, [mobileMode, orgsData?.organizations, selectedOrgId, onOrgSelect]);
+
   const syncErrors = useMemo(() => {
     const errors = syncErrorContext?.errors ? [...syncErrorContext.errors] : [];
 
@@ -330,6 +427,8 @@ export function NavbarContainer({
       breadcrumbs={breadcrumbs}
       leftItems={leftItems}
       rightItems={rightItems}
+      projectSlot={projectSelectorSlot}
+      userSlot={desktopUserSlot}
       syncErrors={syncErrors}
       mobileMode={mobileMode}
       mobileUserSlot={userPopoverSlot}

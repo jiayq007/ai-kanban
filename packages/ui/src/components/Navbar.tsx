@@ -161,6 +161,10 @@ export interface NavbarProps {
   rightItems?: NavbarSectionItem[];
   // Optional additional content for left side (after leftItems)
   leftSlot?: ReactNode;
+  // Optional project selector rendered in the left section (desktop)
+  projectSlot?: ReactNode;
+  // Optional user popover rendered in the right section (desktop)
+  userSlot?: ReactNode;
   // Sync errors shown in the right section
   syncErrors?: readonly SyncErrorIndicatorError[] | null;
   className?: string;
@@ -188,6 +192,8 @@ export function Navbar({
   leftItems = [],
   rightItems = [],
   leftSlot,
+  projectSlot,
+  userSlot,
   syncErrors,
   className,
   mobileMode = false,
@@ -425,8 +431,9 @@ export function Navbar({
         className
       )}
     >
-      {/* Left - Archive & Old UI Link + optional slot */}
+      {/* Left - Project selector + left items + optional slot */}
       <div data-tauri-drag-region className="flex-1 flex items-center gap-base">
+        {projectSlot}
         {leftItems.map((item, index) =>
           renderItem(
             item,
@@ -468,6 +475,7 @@ export function Navbar({
             `right-${isDivider(item) ? 'divider' : item.id}-${index}`
           )
         )}
+        {userSlot}
       </div>
     </nav>
   );
