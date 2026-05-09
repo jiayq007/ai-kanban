@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWorkspaceContext } from '@/shared/hooks/useWorkspaceContext';
 import { useUserContext } from '@/shared/hooks/useUserContext';
@@ -134,6 +134,8 @@ export function NavbarContainer({
   projects,
   activeProjectId,
   onProjectClick,
+  preProjectSlot,
+  notificationSlot,
 }: {
   mobileMode?: boolean;
   onOrgSelect?: (orgId: string) => void;
@@ -141,6 +143,8 @@ export function NavbarContainer({
   projects?: NavbarProject[];
   activeProjectId?: string | null;
   onProjectClick?: (projectId: string) => void;
+  preProjectSlot?: ReactNode;
+  notificationSlot?: ReactNode;
 }) {
   const { t } = useTranslation('common');
   const { executeAction } = useActions();
@@ -390,7 +394,14 @@ export function NavbarContainer({
         </PopoverContent>
       </Popover>
     );
-  }, [mobileMode, isSignedIn, projects, activeProjectId, activeProjectName, onProjectClick]);
+  }, [
+    mobileMode,
+    isSignedIn,
+    projects,
+    activeProjectId,
+    activeProjectName,
+    onProjectClick,
+  ]);
 
   // Build user slot for desktop navbar
   const desktopUserSlot = useMemo(() => {
@@ -427,7 +438,9 @@ export function NavbarContainer({
       breadcrumbs={breadcrumbs}
       leftItems={leftItems}
       rightItems={rightItems}
+      preProjectSlot={preProjectSlot}
       projectSlot={projectSelectorSlot}
+      notificationSlot={notificationSlot}
       userSlot={desktopUserSlot}
       syncErrors={syncErrors}
       mobileMode={mobileMode}

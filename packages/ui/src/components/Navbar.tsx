@@ -161,8 +161,12 @@ export interface NavbarProps {
   rightItems?: NavbarSectionItem[];
   // Optional additional content for left side (after leftItems)
   leftSlot?: ReactNode;
+  // Optional content rendered before the project selector (desktop left)
+  preProjectSlot?: ReactNode;
   // Optional project selector rendered in the left section (desktop)
   projectSlot?: ReactNode;
+  // Optional notification slot rendered in the right section before userSlot
+  notificationSlot?: ReactNode;
   // Optional user popover rendered in the right section (desktop)
   userSlot?: ReactNode;
   // Sync errors shown in the right section
@@ -192,7 +196,9 @@ export function Navbar({
   leftItems = [],
   rightItems = [],
   leftSlot,
+  preProjectSlot,
   projectSlot,
+  notificationSlot,
   userSlot,
   syncErrors,
   className,
@@ -431,8 +437,9 @@ export function Navbar({
         className
       )}
     >
-      {/* Left - Project selector + left items + optional slot */}
+      {/* Left - Pre-project buttons + Project selector + left items + optional slot */}
       <div data-tauri-drag-region className="flex-1 flex items-center gap-base">
+        {preProjectSlot}
         {projectSlot}
         {leftItems.map((item, index) =>
           renderItem(
@@ -463,7 +470,7 @@ export function Navbar({
         )}
       </div>
 
-      {/* Right - Sync Error Indicator + Diff Controls + Panel Toggles (dividers inline) */}
+      {/* Right - Sync Error Indicator + right items + notification + user */}
       <div
         data-tauri-drag-region
         className="flex-1 flex items-center justify-end gap-base"
@@ -475,6 +482,7 @@ export function Navbar({
             `right-${isDivider(item) ? 'divider' : item.id}-${index}`
           )
         )}
+        {notificationSlot}
         {userSlot}
       </div>
     </nav>
