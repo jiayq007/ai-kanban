@@ -161,6 +161,8 @@ export const Pages: Record<StaticPageId, CommandBarPage> = {
         items: [
           { type: 'action', action: Actions.CreateIssue },
           { type: 'action', action: Actions.ChangeIssueStatus },
+          { type: 'action', action: Actions.DeleteIssue },
+          { type: 'action', action: Actions.DuplicateIssue },
           { type: 'action', action: Actions.ChangeNewIssueStatus },
           { type: 'action', action: Actions.ChangePriority },
           { type: 'action', action: Actions.ChangeNewIssuePriority },
@@ -174,8 +176,6 @@ export const Pages: Record<StaticPageId, CommandBarPage> = {
           { type: 'action', action: Actions.MarkBlockedBy },
           { type: 'action', action: Actions.MarkRelated },
           { type: 'action', action: Actions.MarkDuplicateOf },
-          { type: 'action', action: Actions.DuplicateIssue },
-          { type: 'action', action: Actions.DeleteIssue },
         ],
       },
     ],
