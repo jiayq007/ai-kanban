@@ -12,6 +12,7 @@ import {
   PlusIcon,
   KanbanIcon,
   SpinnerIcon,
+  ChatsTeardrop as ChatsTeardropIcon,
   type Icon,
 } from '@phosphor-icons/react';
 import { cn } from '../lib/cn';
@@ -61,6 +62,8 @@ interface AppBarProps {
   appVersion?: string | null;
   updateVersion?: string | null;
   onUpdateClick?: () => void;
+  isAgentPanelOpen?: boolean;
+  onToggleAgentPanel?: () => void;
 }
 
 export interface AppBarProject {
@@ -209,6 +212,8 @@ export function AppBar({
   appVersion,
   updateVersion,
   onUpdateClick,
+  isAgentPanelOpen = false,
+  onToggleAgentPanel,
 }: AppBarProps) {
   const { t } = useTranslation('common');
   const sections: AppBarSection[] = [];
@@ -497,11 +502,61 @@ export function AppBar({
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
       className={cn(
-        'flex flex-col items-center h-full min-h-0 overflow-y-auto p-base gap-base',
-        'bg-secondary border-r border-border'
+        'flex flex-col h-full min-h-0 bg-secondary border-r border-border',
+        isAgentPanelOpen
+          ? 'w-full'
+          : 'items-center p-base gap-base overflow-y-auto'
       )}
     >
-      {sections.map((section) => (
+      {/* Agent toggle button */}
+      <div
+        className={cn(
+          'flex shrink-0',
+          isAgentPanelOpen
+            ? 'items-center justify-between px-base py-half border-b border-border'
+            : 'flex-col items-center'
+        )}
+      >
+        <Tooltip
+          content={isAgentPanelOpen ? 'Collapse agent' : 'Kanban Agent'}
+          side="right"
+        >
+          <button
+            type="button"
+            onClick={onToggleAgentPanel}
+            className={cn(
+              'flex items-center justify-center rounded-lg transition-colors cursor-pointer',
+              isAgentPanelOpen
+                ? 'text-low hover:text-normal p-1'
+                : 'w-10 h-10 text-muted hover:text-normal hover:bg-brand/10'
+            )}
+            aria-label={
+              isAgentPanelOpen ? 'Collapse agent' : 'Open Kanban Agent'
+            }
+          >
+            <ChatsTeardropIcon
+              className="size-icon-base"
+              weight={isAgentPanelOpen ? 'fill' : 'regular'}
+            />
+          </button>
+        </Tooltip>
+        {isAgentPanelOpen && (
+          <span className="text-sm font-medium text-normal select-none">
+            Kanban Agent
+          </span>
+        )}
+      </div>
+
+      {/* Expanded panel content */}
+      {isAgentPanelOpen && (
+        <div className="flex-1 min-h-0 overflow-y-auto p-base">
+          <p className="text-xs text-low">Agent conversation area</p>
+        </div>
+      )}
+
+      {/* Sections (hidden when panel is open) */}
+      {!isAgentPanelOpen &&
+        sections.map((section) => (
         <div key={section.key} className="flex flex-col items-center gap-1">
           <AppBarSectionLabel>{section.label}</AppBarSectionLabel>
           {section.items.map((item) => (
@@ -517,9 +572,16 @@ export function AppBar({
         </div>
       ))}
 
-      {/* Bottom section: Notifications + User popover */}
+      {/* Bottom section */}
       {(notificationBell || userPopover || updateVersion || appVersion) && (
-        <div className="mt-auto pt-base flex flex-col items-center gap-4">
+        <div
+          className={cn(
+            'flex flex-col items-center gap-4',
+            isAgentPanelOpen
+              ? 'p-base border-t border-border'
+              : 'mt-auto pt-base'
+          )}
+        >
           {notificationBell}
           {userPopover}
           {updateVersion ? (

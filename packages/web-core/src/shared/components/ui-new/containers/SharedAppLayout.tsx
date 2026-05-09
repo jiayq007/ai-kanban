@@ -54,6 +54,7 @@ export function SharedAppLayout() {
   const { isSignedIn } = useAuth();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAppBarHovered, setIsAppBarHovered] = useState(false);
+  const [isAgentPanelOpen, setIsAgentPanelOpen] = useState(false);
   const navigate = useNavigate();
 
   // Register CMD+K shortcut globally for all routes under SharedAppLayout
@@ -261,6 +262,10 @@ export function SharedAppLayout() {
     return <AppBarNotificationBellContainer />;
   }, [isSignedIn]);
 
+  const handleToggleAgentPanel = useCallback(() => {
+    setIsAgentPanelOpen((v) => !v);
+  }, []);
+
   return (
     <SyncErrorProvider>
       <div
@@ -268,7 +273,12 @@ export function SharedAppLayout() {
           'bg-primary',
           isMobile
             ? 'flex fixed inset-0 pb-[env(safe-area-inset-bottom)]'
-            : cn('grid grid-cols-[auto_1fr] h-screen', 'grid-rows-[auto_1fr]')
+            : cn(
+                'grid h-screen grid-rows-[auto_1fr]',
+                isAgentPanelOpen
+                  ? 'grid-cols-[300px_1fr]'
+                  : 'grid-cols-[auto_1fr]'
+              )
         )}
       >
         {!isMobile && (
@@ -288,11 +298,14 @@ export function SharedAppLayout() {
               onProjectClick={handleProjectClick}
               preProjectSlot={preProjectSlot}
               notificationSlot={notificationSlot}
+              onSignIn={handleSignIn}
             />
-            {/* Desktop AppBar sidebar — reserved for kanban agent chat. */}
+            {/* Desktop AppBar sidebar — kanban agent panel. */}
             <AppBar
               onHoverStart={() => setIsAppBarHovered(true)}
               onHoverEnd={() => setIsAppBarHovered(false)}
+              isAgentPanelOpen={isAgentPanelOpen}
+              onToggleAgentPanel={handleToggleAgentPanel}
             />
             {/* Desktop content. */}
             <div className="relative min-h-0 overflow-hidden">

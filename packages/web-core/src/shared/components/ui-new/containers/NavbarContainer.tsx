@@ -136,6 +136,7 @@ export function NavbarContainer({
   onProjectClick,
   preProjectSlot,
   notificationSlot,
+  onSignIn,
 }: {
   mobileMode?: boolean;
   onOrgSelect?: (orgId: string) => void;
@@ -145,6 +146,7 @@ export function NavbarContainer({
   onProjectClick?: (projectId: string) => void;
   preProjectSlot?: ReactNode;
   notificationSlot?: ReactNode;
+  onSignIn?: () => void;
 }) {
   const { t } = useTranslation('common');
   const { executeAction } = useActions();
@@ -406,6 +408,17 @@ export function NavbarContainer({
   // Build user slot for desktop navbar
   const desktopUserSlot = useMemo(() => {
     if (mobileMode) return undefined;
+    if (!isSignedIn && onSignIn) {
+      return (
+        <button
+          type="button"
+          onClick={onSignIn}
+          className="px-3 py-1 rounded-sm text-sm font-medium bg-brand text-on-brand hover:bg-brand-hover cursor-pointer"
+        >
+          Sign in
+        </button>
+      );
+    }
     return (
       <AppBarUserPopoverContainer
         organizations={orgsData?.organizations ?? []}
@@ -413,7 +426,14 @@ export function NavbarContainer({
         onOrgSelect={onOrgSelect ?? (() => {})}
       />
     );
-  }, [mobileMode, orgsData?.organizations, selectedOrgId, onOrgSelect]);
+  }, [
+    mobileMode,
+    isSignedIn,
+    onSignIn,
+    orgsData?.organizations,
+    selectedOrgId,
+    onOrgSelect,
+  ]);
 
   const syncErrors = useMemo(() => {
     const errors = syncErrorContext?.errors ? [...syncErrorContext.errors] : [];
