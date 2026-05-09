@@ -2,6 +2,7 @@
 # and REMOTE_SERVER_PORTS=0.0.0.0:3000:8081 so the server is reachable from other hosts.
 services:
   remote-db:
+    platform: linux/arm64
     image: postgres:16-alpine
     command: [ "postgres", "-c", "wal_level=logical" ]
     environment:
@@ -50,7 +51,10 @@ services:
         echo "Azurite CORS configured"
 
   electric:
+    platform: linux/arm64
     image: electricsql/electric:1.4.13
+    ports:
+      - "3099:3000"
     working_dir: /app
     restart: on-failure
     environment:
@@ -71,6 +75,7 @@ services:
         condition: service_healthy
 
   remote-server:
+    platform: linux/arm64
     build:
       context: ../..
       dockerfile: crates/remote/Dockerfile

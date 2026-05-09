@@ -60,17 +60,17 @@ pub(crate) async fn proxy_table(
         .query_pairs_mut()
         .append_pair("table", shape.table());
 
-    // Set WHERE clause with parameterized values
+    // Inline parameter values into the WHERE clause since Electric 1.4.x
+    // does not support the params[1]/params[2] query parameter syntax.
+    let mut where_clause = shape.where_clause().to_string();
+    for (i, param) in electric_params.iter().enumerate() {
+        let placeholder = format!("${}", i + 1);
+        let escaped = param.replace('\'', "''");
+        where_clause = where_clause.replace(&placeholder, &format!("'{}'", escaped));
+    }
     origin_url
         .query_pairs_mut()
-        .append_pair("where", shape.where_clause());
-
-    // Pass params for $1, $2, etc. placeholders
-    for (i, param) in electric_params.iter().enumerate() {
-        origin_url
-            .query_pairs_mut()
-            .append_pair(&format!("params[{}]", i + 1), param);
-    }
+        .append_pair("where", &where_clause);
 
     // Forward safe client params
     for (key, value) in client_params {
