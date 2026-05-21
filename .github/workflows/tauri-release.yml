@@ -6,37 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-tauri:
+  build-macos-arm64:
+    name: macOS (arm64)
+    runs-on: macos-latest
     permissions:
       contents: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: macos
-            runner: [self-hosted, macOS, ARM64]
-            target: aarch64-apple-darwin
-            label: macos-arm64
-          - platform: macos
-            runner: [self-hosted, macOS, X64]
-            target: x86_64-apple-darwin
-            label: macos-x64
-          - platform: linux
-            runner: [self-hosted, Linux, X64]
-            target: x86_64-unknown-linux-gnu
-            label: linux-x64
-          - platform: linux
-            runner: [self-hosted, Linux, ARM64]
-            target: aarch64-unknown-linux-gnu
-            label: linux-arm64
-          - platform: windows
-            runner: [self-hosted, Windows, X64]
-            target: x86_64-pc-windows-msvc
-            label: windows-x64
-
-    runs-on: ${{ matrix.runner }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -47,24 +21,13 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Install Linux system dependencies
-        if: matrix.platform == 'linux'
-        run: |
-          REQUIRED_PKGS=(libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf)
-          MISSING=()
-          for pkg in "${REQUIRED_PKGS[@]}"; do
-            dpkg -s "$pkg" >/dev/null 2>&1 || MISSING+=("$pkg")
-          done
-          if [ ${#MISSING[@]} -gt 0 ]; then
-            sudo apt-get update
-            sudo apt-get install -y --no-install-recommends "${MISSING[@]}"
-          fi
-
-      - name: Add Rust target
-        run: rustup target add ${{ matrix.target }}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
 
       - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: swatinem/rust-cache@v2
         with:
           workspaces: '. -> target'
 
@@ -75,15 +38,201 @@ jobs:
         run: pnpm --filter @vibe/local-web run build
 
       - name: Build Tauri
-        run: cd crates/tauri-app && cargo tauri build --target ${{ matrix.target }} --ci
+        run: cd crates/tauri-app && cargo tauri build --target aarch64-apple-darwin --ci
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            crates/tauri-app/target/${{ matrix.target }}/release/bundle/**/*.dmg
-            crates/tauri-app/target/${{ matrix.target }}/release/bundle/**/*.AppImage
-            crates/tauri-app/target/${{ matrix.target }}/release/bundle/**/*.deb
-            crates/tauri-app/target/${{ matrix.target }}/release/bundle/msi/*.msi
+            crates/tauri-app/target/aarch64-apple-darwin/release/bundle/**/*.dmg
+            crates/tauri-app/target/aarch64-apple-darwin/release/bundle/macos/*.app.tar.gz
+          draft: false
+          prerelease: true
+
+  build-macos-x64:
+    name: macOS (x64 Intel)
+    runs-on: macos-15-intel
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build frontend
+        run: pnpm --filter @vibe/local-web run build
+
+      - name: Build Tauri
+        run: cd crates/tauri-app && cargo tauri build --target x86_64-apple-darwin --ci
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            crates/tauri-app/target/x86_64-apple-darwin/release/bundle/**/*.dmg
+            crates/tauri-app/target/x86_64-apple-darwin/release/bundle/macos/*.app.tar.gz
+          draft: false
+          prerelease: true
+
+  build-linux-x64:
+    name: Linux (x64)
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build frontend
+        run: pnpm --filter @vibe/local-web run build
+
+      - name: Build Tauri
+        run: cd crates/tauri-app && cargo tauri build --target x86_64-unknown-linux-gnu --ci
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            crates/tauri-app/target/x86_64-unknown-linux-gnu/release/bundle/**/*.AppImage
+            crates/tauri-app/target/x86_64-unknown-linux-gnu/release/bundle/**/*.deb
+          draft: false
+          prerelease: true
+
+  build-linux-arm64:
+    name: Linux (arm64)
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-unknown-linux-gnu
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build frontend
+        run: pnpm --filter @vibe/local-web run build
+
+      - name: Build Tauri
+        run: cd crates/tauri-app && cargo tauri build --target aarch64-unknown-linux-gnu --ci
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            crates/tauri-app/target/aarch64-unknown-linux-gnu/release/bundle/**/*.AppImage
+            crates/tauri-app/target/aarch64-unknown-linux-gnu/release/bundle/**/*.deb
+          draft: false
+          prerelease: true
+
+  build-windows-x64:
+    name: Windows (x64)
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build frontend
+        run: pnpm --filter @vibe/local-web run build
+
+      - name: Build Tauri
+        run: cd crates/tauri-app && cargo tauri build --target x86_64-pc-windows-msvc --ci
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            crates/tauri-app/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+            crates/tauri-app/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
           draft: false
           prerelease: true
