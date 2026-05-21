@@ -43,6 +43,9 @@ jobs:
         run: cargo install tauri-cli --version "^2" --locked
 
       - name: Build Tauri
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: cd crates/tauri-app && cargo tauri build --target aarch64-apple-darwin --ci
 
       - name: Upload to GitHub Release
@@ -91,6 +94,9 @@ jobs:
         run: cargo install tauri-cli --version "^2" --locked
 
       - name: Build Tauri
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: cd crates/tauri-app && cargo tauri build --target x86_64-apple-darwin --ci
 
       - name: Upload to GitHub Release
@@ -147,6 +153,9 @@ jobs:
         run: cargo install tauri-cli --version "^2" --locked
 
       - name: Build Tauri
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: cd crates/tauri-app && cargo tauri build --target x86_64-unknown-linux-gnu --ci
 
       - name: Upload to GitHub Release
@@ -205,6 +214,9 @@ jobs:
         run: cargo install tauri-cli --version "^2" --locked
 
       - name: Build Tauri
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: cd crates/tauri-app && cargo tauri build --target aarch64-unknown-linux-gnu --ci
 
       - name: Upload to GitHub Release
@@ -253,6 +265,9 @@ jobs:
         run: cargo install tauri-cli --version "^2" --locked
 
       - name: Build Tauri
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: cd crates/tauri-app && cargo tauri build --target x86_64-pc-windows-msvc --ci
 
       - name: Upload to GitHub Release
