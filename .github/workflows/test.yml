@@ -7,9 +7,6 @@ on:
     paths-ignore:
       - .github/workflows/**
       - '!.github/workflows/test.yml'
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 concurrency:
